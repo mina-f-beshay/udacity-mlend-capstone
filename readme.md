@@ -62,7 +62,9 @@ After tunning the hyperparameters, <span style="background-color:yellow">The Gra
 | Random Forest       | `0.7615290826938249` | `0.7820529627687467` |
 | Gradient Boosting   | <span style="background-color:yellow"> 0.7578039330360407 </span> | <span style="background-color:yellow"> 0.7828395385422129</span>|
 
-## Summary
+## Summary and Feature Importance
+
+!["Feature Importance"](./feature_importance.jpg)
 
 `offer_informational` is the most important feature used by the Gradient Boosting model</br>
 `difficuly` offer difficulty reflects the amount spent by the customer</br>
