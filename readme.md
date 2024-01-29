@@ -5,8 +5,9 @@
 4. [Datasets and Inputs](#datasets-and-inputs)
 5. [Data Preprocessing](#data-preprcoessing)
 6. [Exploratory Data Analaysis](#exploratory-data-analysis)
-7. [Predictive Models Results](#predictive-models-results)
-8. [Summary and Feature Importance](#summary-and-feature-importance)
+7. [Implementation](#implementation)
+8. [Predictive Models Results](#predictive-models-results)
+9. [Refinement](#refinement)
 
 ## Domain Background 
 This project aims to design a machine learning model that can optimize the best offer for a group of customers based on their preferences and behaviors. The data source for this project is a simulated dataset from Starbucks, the world’s largest coffeehouse company and a leader in customer loyalty programs. 
@@ -195,19 +196,35 @@ Based on the exploratory data analysis, I have found that both offers with IDs `
 
 <div style="page-break-after: always;"></div>
 
-## Models have been used
+## Implementation
 
-During this project, three machine learning models were utilized.
+During this project, three machine learning models were utilized. </br>During the implementation, `radnom_state` has been set to `42`.</br>
+ The `random_state` parameter in scikit-learn is used for initializing the internal random number generator, which will decide the splitting of data into train and test indices in our case.
+`random_state` parameter is important when we need reproducibility of the code so that we can we get the same results whenever the code is run.
 
 * `Logistic Regression`</br>
-The `liblinear` solver was used as a classifer, as the dataset is relatively small.
+The `liblinear` solver was used as a classifer, as the dataset is relatively small. One challgenge was met in this part, the default solver `lbfgs` gave poor results, the `liblinear` solver fits here as the dataset is relatively small.
+
+
+For the **advanced machine learning** models such as `Random Forest` and `Gradient Boosting`
+Using metrics like `F1 score` and `Accuracy` are crucial in evaluating the performance of machine learning models. Here’s why:</br>
+
+`Accuracy`: This is one of the most straightforward metrics. It computes how many times a model made a correct prediction across the entire dataset. However, accuracy can be misleading if the dataset is imbalanced, i.e., when the number of samples in different classes varies significantly. For example, in a binary classification problem, if 90% of the samples belong to Class A and only 10% belong to Class B, a model that always predicts Class A will still have an accuracy of 90%.
+
+`F1 Score`: The F1 score is a more robust metric, especially for imbalanced datasets. It combines precision and recall into a single value. Precision represents the accuracy of positive predictions, while recall represents how well a model can identify actual positive cases. The F1 score is the harmonic mean of precision and recall, providing a balance between these two metrics. It ranges from 0 to 1, with 1 indicating the best possible performance. </br>
+
+So it is important to use both scores together.
+
 * `Random Forest` </br>
 With setting only one hyperparameter `n_estimator`= `100`
+
 * `Gradient Boosting`</br>
 With setting the following hyperparameters:</br>
 i. `n_estimator`=`100` </br>
 ii. `learning_rate`=`1.0`</br>
 iii. `max_depth` = `1`</br>
+
+<div style="page-break-after: always;"></div>
 
 
 ## Predictive Models Results
@@ -223,6 +240,25 @@ Before applying any hyperparameters tunning, these were the results.
 The `Logistic Regression` outperformed, this maybe because the hyperparameters configured for `Random Forest` and `Gradient Boosting` models.
 Other reasons may be the reason behind that, the dataset is relatively small and may the relation between the features and target is linear.
 
+## Refinement
+
+To refine the results, I have used `GridSearchCV` tool and passed these ranges for the `Random Forest` model: </br>`rf_params = {
+    'n_estimators': [50, 100, 200],
+    'max_depth': [None, 10, 20, 30],
+    'min_samples_split': [2, 5, 10]
+}
+`</br>
+
+And passed these ranges for `Gradient Boosting` model:</br>
+`gb_params = {
+    'n_estimators': [50, 100, 200],
+    'learning_rate': [0.01, 0.1, 1.0],
+    'max_depth': [3, 5, 10]
+}
+`
+
+`GridSearchCV` tool performs an exhaustive search over the specified parameter values for an estimator. The parameters of the estimator used to apply these methods are optimized by cross-validated grid-search over a parameter grid.
+
 After tunning the hyperparameters, <span style="background-color:yellow">The Gradient Boosting Model</span>, using the below hyperparameters slightly outperforms the others:
 * `learning_rate`: `0.1`
 * `max_depth`: `5`
@@ -234,10 +270,6 @@ After tunning the hyperparameters, <span style="background-color:yellow">The Gra
 | Random Forest       | `0.7615290826938249` | `0.7820529627687467` |
 | Gradient Boosting   | <span style="background-color:yellow"> 0.7578039330360407 </span> | <span style="background-color:yellow"> 0.7828395385422129</span>|
 
-<div style="page-break-after: always;"></div>
-
-## Summary and Feature Importance
-
 !["Feature Importance"](./feature_importance.jpg)
 
 `offer_informational` is the most important feature used by the Gradient Boosting model</br>
@@ -245,4 +277,4 @@ After tunning the hyperparameters, <span style="background-color:yellow">The Gra
 `duration` reflects the duration of the offer</br>
 `membership_year_2016` customers joined in 2016</br>
 
-Passing only the top important features to the Gradient Boosting model can result in more accuracy and F1 score results
+In future, passing only the top important features, mentioned above, to the Gradient Boosting model can result in more accuracy and F1 score results.
